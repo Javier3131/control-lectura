@@ -71,37 +71,62 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection('reads')
-                    .orderBy('readDate', descending: true)
-                    .snapshots(),
-                builder: (context, chatSnapshot) {
-                  if (chatSnapshot.connectionState == ConnectionState.waiting) {
+              child: FutureBuilder(
+                future: FirebaseAuth.instance.currentUser(),
+                builder: (ctx, futureSnapshot) {
+                  if (futureSnapshot.connectionState ==
+                      ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
+                  return StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('reads')
+                        .where('userId', isEqualTo: futureSnapshot.data.uid)
+                        .orderBy('readDate', descending: true)
+                        .snapshots(),
+                    builder: (context, chatSnapshot) {
+                      if (chatSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
 
-                  final readsDocs = chatSnapshot.data.documents;
+                      final readsDocs = chatSnapshot.data.documents;
 
-                  return ListView.builder(
-                    itemCount: readsDocs.length,
-                    itemBuilder: (ctx, index) => ListTile(
-                      title: Text(readsDocs[index]['read']),
-                      subtitle: Text(
-                        DateTime.parse(readsDocs[index]['readDate'].toString())
-                            .toString(),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          NewReadScreen.routeName,
-                          arguments: {
-                            'read': readsDocs[index]['read'],
-                            'readDate': readsDocs[index]['readDate'],
-                            'readDocumentId': readsDocs[index].documentID,
+                      return ListView.builder(
+                        itemCount: readsDocs.length,
+                        itemBuilder: (ctx, index) => ListTile(
+                          title: Text(readsDocs[index]['read']),
+                          subtitle: Text(
+                            DateTime.parse(
+                                    readsDocs[index]['readDate'].toString())
+                                .toString(),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              NewReadScreen.routeName,
+                              arguments: {
+                                'read': readsDocs[index]['read'],
+                                'readDate': readsDocs[index]['readDate'],
+                                'documentId': readsDocs[index].documentID,
+                                'imageUrl': readsDocs[index]['imageUrl'] == null
+                                    ? ''
+                                    : readsDocs[index]['imageUrl'],
+                              },
+                            );
                           },
-                        );
-                      },
-                    ),
+                          trailing: IconButton(
+                            color: Theme.of(context).errorColor,
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              Firestore.instance
+                                  .collection('reads')
+                                  .document(readsDocs[index].documentID)
+                                  .delete();
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
