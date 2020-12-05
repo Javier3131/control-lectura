@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "16596570066",
+    "project_id": "control-lectura",
+    "storage_bucket": "control-lectura.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:16596570066:android:74938d10caa4c86435820b",
+        "android_client_info": {
+          "package_name": "com.example.control_lectura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "16596570066-9jlmitp1jq2rtqh4lls3hf9al63c4v3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4G6OfQCyyXUCqCpLRNu5F8R5hvsZZAPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "16596570066-9jlmitp1jq2rtqh4lls3hf9al63c4v3i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
